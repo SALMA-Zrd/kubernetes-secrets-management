@@ -1,0 +1,47 @@
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secrets-api
+  namespace: native
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: secrets-api
+
+  template:
+    metadata:
+      labels:
+        app: secrets-api
+
+    spec:
+      serviceAccountName: secrets-api-sa
+      automountServiceAccountToken: false
+
+      containers:
+        - name: api
+          image: secrets-lab-api:v2
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5000
+
+          envFrom:
+            - secretRef:
+                name: api-db-credentials
+
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault

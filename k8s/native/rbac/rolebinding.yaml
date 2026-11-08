@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: api-pod-reader-binding
+  namespace: native
+subjects:
+  - kind: ServiceAccount
+    name: secrets-api-sa
+    namespace: native
+roleRef:
+  kind: Role
+  name: api-pod-reader
+  apiGroup: rbac.authorization.k8s.io

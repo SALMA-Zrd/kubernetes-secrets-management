@@ -1,0 +1,29 @@
+
+
+# Sensitive credentials and configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.kubeconfig
+kubeconfig*
+.etcd-demo-certs/
+.etcd-main-certs/
+**/.etcd-*-certs/
+kind/encryption/encryption-config.yaml
+**/*token*
+**/*secret*.local.yaml
+
+# Local backups and runtime data
+backups/
+*.db
+*.sqlite3
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.DS_Store

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secrets-api-vault
+  namespace: native
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: secrets-api-vault
+
+  template:
+    metadata:
+      labels:
+        app: secrets-api-vault
+
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "flask-role"
+
+        vault.hashicorp.com/agent-inject-secret-db.json: "secret/data/flask"
+        vault.hashicorp.com/template-static-secret-render-interval: "30s"
+
+        vault.hashicorp.com/agent-inject-template-db.json: |
+          {{- with secret "secret/data/flask" -}}
+          {{ .Data.data | toJSON }}
+          {{- end }}
+
+        vault.hashicorp.com/agent-run-as-user: "1000"
+        vault.hashicorp.com/agent-run-as-group: "1000"
+
+    spec:
+      serviceAccountName: secrets-api-sa
+      automountServiceAccountToken: true
+
+      securityContext:
+        runAsNonRoot: true
+
+      containers:
+        - name: api
+          image: secrets-lab-api:v2
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5000
+
+          env:
+            - name: SECRETS_BACKEND
+              value: "vault"
+
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            allowPrivilegeEscalation: false
+
+            capabilities:
+              drop:
+                - ALL
+
+            seccompProfile:
+              type: RuntimeDefault
