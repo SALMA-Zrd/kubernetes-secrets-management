@@ -364,6 +364,4 @@ Expected eventually: `version2` without a Pod restart. The Flask application rea
 - This is a **local educational lab**. Vault dev mode, hardcoded demo tokens, and local encryption keys are not production practices.
 - The source tree contains infrastructure manifests but does not contain all imperative setup steps (e.g., original Calico install and full Vault Kubernetes Auth configuration). Verify the actual manifest keys and versions before running every command.
 
-## License
 
-Add a license file if you want to grant reuse permissions. No license is assumed by this README.
